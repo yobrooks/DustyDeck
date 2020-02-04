@@ -91,5 +91,71 @@ program dusty
             end if
 45      continue
 40  continue
-        
+
+!Loop 50
+    do 50 i = 1, N
+        do 52 j = 1, N
+            CM(i,j) = 0.0
+            do 55 k = 1, N
+                if(i .lt. j) then
+                    CM(i,j) = CM(i,j) - AM(i,k) * BM(k,j) / check
+                else
+                    CM(i,j) = CM(i,j) + AM(i,k) * BM(k,j) / check
+                endif
+55          continue
+52      continue
+50  continue
+
+!Loop 60
+    do 60 i = 1, N
+        do 61 j = 1, N
+            sum = 0.0
+            do 62 k = 1, N
+                sum = sum + CM(i,k) * AM(j,k)
+62          continue
+            DM(i,j) = sum
+61      continue
+60  continue
+
+    do 63 i = 1, N
+        do 64 j = 1, N
+            CM(i,j) = DM(i,j)
+64      continue
+63  continue
+
+!Loop 70
+    do 70 i = 1, N
+        do 71 j = 1, N
+            sum = 0.0
+            do 72 k = 1, N
+                sum = sum - CM(i,k) * BM(j,k)
+72          continue
+            DM(i,j) = sum
+71      continue
+70  continue
+
+    HOLDA = abs(AM(1,1))
+    HOLDB = abs(BM(1,1)) !array indeces start at 1 not 0
+    do 73 i = 1, N
+        do 74 j = 1, N
+            HOLDA = max(HOLDA,abs(AM(i,j)))
+            HOLDB = max(HOLDB,abs(BM(i,j)))
+74      continue
+73  continue
+
+    TRACE3 = 0.0
+
+!Loop 80
+    do 80 i = 1, N
+        TRACE3 = TRACE# + (AM(IA(i),IA(i)) + BM(IA(i),IA(i))&
+                        -DM(IA(i),IA(i))) / (HOLDA * HOLDB)
+80  continue
+
+    !cpu = cputime() - cpu
+    !wall = walltime() - wall
+
+    print *, "Final trace = ", TRACE3, " and IDCHECK ", check
+    !print *, "--RUNTIME--> ", cpu, " seconds"    
 end program dusty
+
+REAL(KIND = DP) function trig (i,j)
