@@ -6,7 +6,7 @@
 # Spring 2007
 #
 
-F77 = gfortran    
+F90 = gfortran    
 CC  = gcc 
 CFLAGS = -O3
 
@@ -23,12 +23,12 @@ cputime.o : cputime.cc
 walltime.o : walltime.cc   
 	$(CC) $(CFLAGS) -c walltime.cc  
 
-dusty.o : dusty.f   
-	$(F77) -c dusty.f   
+dusty.o : dusty.f90  
+	$(F90) -c dusty.f90   
 
 # Don't forget the -lstdc++
 dusty : dusty.o lib  $(OBJS) 
-	$(F77) -o dusty dusty.o  $(TIMINGLIBS) -lstdc++  
+	$(F90) -o dusty dusty.o  $(TIMINGLIBS) -lstdc++  
 
 # Default Targets for Cleaning up the Environment
 clean :
@@ -38,10 +38,10 @@ clean :
 pristine :
 	rm *.o
 	rm *.a
-	touch *.c *.f  
+	touch *.c *.f90  
 
 ctags :
-	ctags  *.c *.f
+	ctags  *.c *.f90
 
 # Target for making the library
 
