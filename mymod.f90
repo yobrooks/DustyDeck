@@ -1,5 +1,5 @@
 MODULE ExtraFunc
-  INTEGER, PARAMETER :: DP = SELECTED_REAL_KIND(17, 307)
+  INTEGER, PARAMETER :: DP = SELECTED_REAL_KIND(15, 307)
   
   CONTAINS
           REAL(KIND = DP) function trig (i,j)
@@ -15,7 +15,8 @@ MODULE ExtraFunc
 
 
         REAL(KIND = DP) function conrand(seed)
-                REAL(KIND = SELECTED_REAL_KIND(17,307)) :: seed, a, m, temp
+                REAL(KIND = DP) :: seed
+                REAL(KIND = DP) :: a, m, temp
                 a = 16807.0D0
                 m = 2147483647.0D0
                 temp = a*seed
