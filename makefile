@@ -6,7 +6,7 @@
 # Spring 2007
 #
 
-F90 = gfortran    
+FC = gfortran    
 CC  = gcc 
 CFLAGS = -O3
 
@@ -15,20 +15,40 @@ CLIBS = -lm
 
 OBJS = cputime.o walltime.o  
 
-all: dusty lib
+# Three different targets for all three dusty versions
+all: lib dusty dustyC dustyF
 
+# Timing files
 cputime.o : cputime.cc   
 	$(CC) $(CFLAGS) -c cputime.cc  
 
 walltime.o : walltime.cc   
 	$(CC) $(CFLAGS) -c walltime.cc  
 
-dusty.o : dusty.f90  
-	$(F90) -c dusty.f90   
+#Original F77 dusty file
+dusty.o : dusty.f  
+	$(FC) -c dusty.f
 
-# Don't forget the -lstdc++
-dusty : dusty.o lib  $(OBJS) 
-	$(F90) -o dusty dusty.o  $(TIMINGLIBS) -lstdc++  
+dusty : dusty.o lib  $(OBJS)
+	$(FC) -o dusty dusty.o  $(TIMINGLIBS) -lstdc++ 
+
+# C++ dusty file
+dustyC.o : dustyC.cpp
+	$(CC) $(CLIBS) -c dustyC.cpp
+
+dustyC : dustyC.o lib  $(OBJS)
+	$(CC) $(CLIBS) -o dustyC dustyC.o  $(TIMINGLIBS) -lstdc++ 
+
+# F90 dusty files
+mymod.o : mymod.f90
+	$(FC) -c mymod.f90
+
+dustyF.o : dustyF.f90 mymod.o
+	$(FC) -c mymod.f90 dustyF.f90
+
+dustyF : dustyF.o mymod.o lib  $(OBJS) 
+	$(FC) -o dustyF dustyF.o mymod.o  $(TIMINGLIBS) -lstdc++
+
 
 # Default Targets for Cleaning up the Environment
 clean :
@@ -38,10 +58,10 @@ clean :
 pristine :
 	rm *.o
 	rm *.a
-	touch *.c *.f90  
+	touch *.c *.f *.f90
 
 ctags :
-	ctags  *.c *.f90
+	ctags  *.c *.f *.f90
 
 # Target for making the library
 
