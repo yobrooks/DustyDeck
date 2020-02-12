@@ -5,7 +5,7 @@
 #include "cputime.cc"
 
 using namespace std;
-const int MAXDIM = 100;
+const int MAXDIM = 25;
 
 /*Parameters*/
 double conrand(double &seed);
@@ -20,22 +20,31 @@ int main(){
     double AM[MAXDIM][MAXDIM], BM[MAXDIM][MAXDIM];
     double CM[MAXDIM][MAXDIM], DM[MAXDIM][MAXDIM];
     double BOT, TOP, HOLDA, HOLDB;
-    double TRACE3 = 0.0; int ival = 0; float sum = 0.0; double check = 0.0;
+    double TRACE3 = 0.0; int ival = 0; float sum = 0.0; double check=0.0;
     /*For the timing library*/
     double wall, cpu, seed;
     N = MAXDIM; seed = 1.0;
     wall = walltime_();
     cpu = cputime_();
     /*Loop 10*/
+	
+    /*#ifndef MO1
+    int conrandV = conrand(seed);	
     for(int i = 0; i<N; i++){
-        AV[i] = jn(0,(double)(conrand(seed)*pow(-1,(((int)(10*conrand(seed)))%N))));
+        AV[i] = jn(0,(double)(conrandV*pow(-1,(((int)(10*conrandV)%N)))));
+	BV[i] = jn(1,(double)(conrandV*pow(-1,(((int)(10*conrandV))%N))));
+    }
+
+    #else*/
+    for(int i = 0; i<N; i++){
+        AV[i] = jn(0,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
 
     /*Loop 11*/
     for(int i = 0; i<N; i++){
-        BV[i] = jn(1,(double)(conrand(seed)*pow(-1,(((int)(10*conrand(seed)))%N))));
+        BV[i] = jn(1,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
-
+    //#endif
     /*Loop 12*/
     for(int i = 0; i<N; i++){
         ival = N;
@@ -50,7 +59,7 @@ int main(){
             idcheck(N, check, AV, BV, ID);
             if(check > 0.5)
             {
-                OP[i][j] = (AV[i]*BV[j])/BV[i];
+                OP[i][j] = AV[i]*BV[j]/BV[i];
             }
             else{
                 OP[i][j] = AV[j]*BV[i]/BV[j];
@@ -81,6 +90,7 @@ int main(){
 
     /*Loop 40*/
     for(int i = 0; i<N; i++){
+        idcheck(N, check, AV, BV, ID);
         /*Loop 45*/
         for(int j = 0; j<N; j++){
             if(check > 0.5){
@@ -128,7 +138,7 @@ int main(){
             for(int k = 0; k<N; k++){
                 sum =sum+(CM[i][k]*AM[j][k]);
             }
-            DM[i][j] = sum; 
+            DM[i][j] = sum;
         }
     }
 
@@ -172,19 +182,19 @@ int main(){
     /*DONE!*/
    cpu = cputime_() - cpu;
    wall = walltime_() - wall;
-   cout << "Final Trace: " << setprecision(17) << TRACE3 << "and IDCheck: " << check << endl;;
-   cout << "Runtime: " << cpu << " seconds" << endl;
+   cout << "Final Trace: " << setprecision(17) << TRACE3 << " and IDCheck: " << check << endl;;
+   cout << "Runtime: " << setprecision(17) << cpu << " seconds" << endl;
 }
 
 
 double conrand(double &seed){
     double a, m, temp;
 
-    a = 16807.0;
-    m = 2147483647.0;
+    a = 16807.00;
+    m = 2147483647.00;
 
     temp = a*seed;
-    seed = temp-m *(int)(temp/m);
+    seed = temp - m*(int)(temp/m);
     return (seed/m);
 }
 
@@ -199,7 +209,7 @@ double trig(int i, int j){
 }
 
 void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][MAXDIM]){
-    double l2 = 0.0;
+    double l2 = float(0.0);
     double check2;
     double a = 0.0; double b = 0.0; double c = 0.0; double d = 0.0;
 
@@ -222,7 +232,7 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
                 }
             } 
             else if(i!=j){
-                ID[i][j] = cos(check+2.0*(i+1)*acosf(-1.0)/N)+2.0*sin(check+2.0*(j+1)*acosf(-1.0)/N);
+                ID[i][j] = cos(check+2*(i+1)*acosf(-1.0)/N)+2*sin(check+2*(j+1)*acosf(-1.0)/N);
             }
        }
     }
