@@ -3,7 +3,7 @@ program dusty
         IMPLICIT NONE
         !variable declarations/initializations
         !INTEGER, PARAMETER :: DP = SELECTED_REAL_KIND(17, 307)
-        INTEGER, PARAMETER :: MAXDIM = 100 !parameter==constant, real value is 100
+        INTEGER, PARAMETER :: MAXDIM = 100
         INTEGER, DIMENSION(MAXDIM) :: IA
         INTEGER :: N, i, j, k, ival
         REAL(KIND = DP), DIMENSION(MAXDIM) :: AV, BV, CV
@@ -160,8 +160,8 @@ HOLDB = 0D0;
                                 - DM(IA(i),IA(i))) / (HOLDA * HOLDB)
 80      continue
 
-        !cpu = cputime() - cpu
-        !wall = walltime() - wall
+        cpu = cputime() - cpu
+        wall = walltime() - wall
 
         write(*,*), "Final trace = ", TRACE3, " and IDCHECK ", check
         write(*,*), "Runtime = ", cpu, " seconds"

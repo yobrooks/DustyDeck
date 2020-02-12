@@ -28,14 +28,15 @@ int main(){
     cpu = cputime_();
     /*Loop 10*/
 	
-    /*#ifndef MO1
-    int conrandV = conrand(seed);	
+    #ifdef YO1
+    cout << "YO1" << endl;
+    //int conrandV = conrand(seed);	
     for(int i = 0; i<N; i++){
-        AV[i] = jn(0,(double)(conrandV*pow(-1,(((int)(10*conrandV)%N)))));
-	BV[i] = jn(1,(double)(conrandV*pow(-1,(((int)(10*conrandV))%N))));
+        AV[i] = jn(0,(double)(conrand(seed)*pow(-1,(((int)(10*conrandV)%N)))));
+	    BV[i] = jn(1,(double)(conrand(seed)*pow(-1,(((int)(10*conrandV))%N))));
     }
 
-    #else*/
+    #else
     for(int i = 0; i<N; i++){
         AV[i] = jn(0,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
@@ -44,7 +45,7 @@ int main(){
     for(int i = 0; i<N; i++){
         BV[i] = jn(1,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
-    //#endif
+    #endif
     /*Loop 12*/
     for(int i = 0; i<N; i++){
         ival = N;
@@ -65,7 +66,7 @@ int main(){
                 OP[i][j] = AV[j]*BV[i]/BV[j];
             }
         }
-        IA[i] = i;
+        IA[i] = i; //NANI???
     }
 
     /*Loop 15*/
@@ -190,8 +191,8 @@ int main(){
 double conrand(double &seed){
     double a, m, temp;
 
-    a = 16807.00;
-    m = 2147483647.00;
+    a = 16807.0;
+    m = 2147483647.0;
 
     temp = a*seed;
     seed = temp - m*(int)(temp/m);

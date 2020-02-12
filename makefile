@@ -9,6 +9,7 @@
 FC = gfortran    
 CC  = gcc 
 CFLAGS = -O3
+OPTFLAGS = -YO1
 
 TIMINGLIBS =  -L./ -llbstime 
 CLIBS = -lm
@@ -27,27 +28,27 @@ walltime.o : walltime.cc
 
 #Original F77 dusty file
 dusty.o : dusty.f  
-	$(FC) -c dusty.f
+	$(FC) $(OPTFLAGS) -c dusty.f
 
 dusty : dusty.o lib  $(OBJS)
-	$(FC) -o dusty dusty.o  $(TIMINGLIBS) -lstdc++ 
+	$(FC) $(OPTFLAGS) -o dusty dusty.o  $(TIMINGLIBS) -lstdc++ 
 
 # C++ dusty file
 dustyC.o : dustyC.cpp
-	$(CC) $(CLIBS) -c dustyC.cpp
+	$(CC) $(CLIBS) $(OPTFLAGS) -c dustyC.cpp
 
 dustyC : dustyC.o lib  $(OBJS)
-	$(CC) $(CLIBS) -o dustyC dustyC.o  $(TIMINGLIBS) -lstdc++ 
+	$(CC) $(CLIBS) $(OPTFLAGS) -o dustyC dustyC.o  $(TIMINGLIBS) -lstdc++ 
 
 # F90 dusty files
 mymod.o : mymod.f90
-	$(FC) -c mymod.f90
+	$(FC) $(OPTFLAGS) -c mymod.f90
 
 dustyF.o : dustyF.f90 mymod.o
-	$(FC) -c mymod.f90 dustyF.f90
+	$(FC) $(OPTFLAGS) -c mymod.f90 dustyF.f90
 
 dustyF : dustyF.o mymod.o lib  $(OBJS) 
-	$(FC) -o dustyF dustyF.o mymod.o  $(TIMINGLIBS) -lstdc++
+	$(FC) $(OPTFLAGS) -o dustyF dustyF.o mymod.o  $(TIMINGLIBS) -lstdc++
 
 
 # Default Targets for Cleaning up the Environment
