@@ -9,11 +9,10 @@
 FC = gfortran    
 CC  = gcc 
 CFLAGS = -O3
-OPTFLAGS = -YO1
+OPTFLAGS = -O1 -fthread-jumps
 
 TIMINGLIBS =  -L./ -llbstime 
 CLIBS = -lm
-
 OBJS = cputime.o walltime.o  
 
 # Three different targets for all three dusty versions

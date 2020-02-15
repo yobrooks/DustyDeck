@@ -5,7 +5,7 @@
 #include "cputime.cc"
 
 using namespace std;
-const int MAXDIM = 25;
+const int MAXDIM = 100;
 
 /*Parameters*/
 double conrand(double &seed);
@@ -26,17 +26,10 @@ int main(){
     N = MAXDIM; seed = 1.0;
     wall = walltime_();
     cpu = cputime_();
+
+    
     /*Loop 10*/
 	
-    #ifdef YO1
-    cout << "YO1" << endl;
-    //int conrandV = conrand(seed);	
-    for(int i = 0; i<N; i++){
-        AV[i] = jn(0,(double)(conrand(seed)*pow(-1,(((int)(10*conrandV)%N)))));
-	    BV[i] = jn(1,(double)(conrand(seed)*pow(-1,(((int)(10*conrandV))%N))));
-    }
-
-    #else
     for(int i = 0; i<N; i++){
         AV[i] = jn(0,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
@@ -45,7 +38,7 @@ int main(){
     for(int i = 0; i<N; i++){
         BV[i] = jn(1,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
-    #endif
+
     /*Loop 12*/
     for(int i = 0; i<N; i++){
         ival = N;
@@ -115,6 +108,26 @@ int main(){
     }
 
     /*Loop 50*/
+    #ifdef YO1
+    for(int i = 0; i<N; i++){
+        for(int j = i+1; j<N; j++){
+            CM[i][j] = 0;
+            for(int k = 0; k < N; k++){
+                CM[i][j] = CM[i][j]-AM[i][k]*BM[k][j]/check;
+            }
+        }
+    }
+
+    for(int i = 0; i<N; i++){
+        for(int i = j; j>=0; j--){
+            CM[i][j] = 0;
+            for(int k = 0; k < N; k++){
+                CM[i][j] = CM[i][j]+AM[i][k]*BM[k][j]/check;
+            }
+        }
+    }
+
+    #else
     for(int i = 0; i<N; i++){
         /*Loop 52*/
         for(int j = 0; j<N; j++){
@@ -129,6 +142,7 @@ int main(){
             }  
         }
     }
+    #endif
 
     /*Loop 60*/ 
     for(int i = 0; i<N; i++){
@@ -204,7 +218,11 @@ double trig(int i, int j){
     float pi = acosf(-1.0);
     x = double(i) - double(j);
     y = double(i) + double(j);
+    #ifdef YO3
+    z = exp(sin(sqrt((x*x)+(y*y))*pi));
+    #else
     z = exp(sin(sqrt(pow(x,2)+pow(y,2))*pi));
+    #endif
     trig = x+y+log10(fabs(1+z+(x*y*z)))/(fabs(x)+fabs(y));
     return trig;
 }
@@ -215,6 +233,25 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
     double a = 0.0; double b = 0.0; double c = 0.0; double d = 0.0;
 
   /*Loop 10*/
+    #ifdef YO2
+    //set everything equal to else if statement first
+    for(int i = 0; i<N; i++){
+        for(int j =0; j<N; j++){
+            ID[i][j] = cos(check+2*(i+1)*acosf(-1.0)/N)+2*sin(check+2*(j+1)*acosf(-1.0)/N);
+        }
+    }
+
+    //then check if i = j in separate loop; also eliminate the 4 else if statements
+    for(int i = 0; i<N; i++){
+        ID[i][i] = 1;
+        if(AV[i]*BV[i] < 0){
+            ID[i][i] = -1;
+        }
+        else
+            ID[i][i] = 1;
+    }
+
+    #else
     for(int i = 0; i<N; i++){
         /*Loop 20*/
         for(int j = 0; j<N; j++){
@@ -237,10 +274,15 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
             }
        }
     }
+    #endif
 
   /*Loop 30*/
     for(int i = 0; i<N; i++){
+        #ifdef YO3
+        l2 = l2+(AV[i]*AV[i]);
+        #else
         l2 = l2+pow(AV[i],2);
+        #endif
     }
 
   /*Loop 40*/
@@ -252,7 +294,11 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
   /*Loop 50*/
     l2 = 0.0;
     for(int i = 0; i<N; i++){
+        #ifdef YO3
+        l2 = l2+(BV[i]*BV[i]);
+        #else
         l2 = l2+(pow(BV[i],2));
+        #endif
     }
 
   /*Loop 60*/
@@ -268,25 +314,29 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
         for(int j = 0; j<N; j++){
             /*Loop 90*/
             for(int k = 0; k<N; k++){
-                goTo = (int)(((i+j+k+3)%4)+1);
+                goTo = (int)(((i+j+k+3)%4));
                 switch(goTo){
                 /*goto 200*/
-                    case 1:
+                    case 0:
                         a = a+AV[i]*BV[j]*ID[j][k];
                         check = check + a;
                         break;
                 /*goto 300*/
-                    case 2:
+                    case 1:
                         b = b+AV[j]*BV[i]*ID[k][j];
                         check = check - b;
                         break;
                 /*goto 400*/
-                    case 3:
+                    case 2:
                         c = c-AV[i]*BV[j]*ID[k][j];
+                        #ifdef YO3
+                        check = sqrt((b*b)+ (c*c));
+                        #else
                         check = sqrt(pow(b,2)+pow(c,2));
+                        #endif
                         break;
                 /*goto 500*/
-                    case 4:
+                    case 3:
                         d = d-AV[j]*BV[i]*ID[j][k];
                         check2 = a+b+c+d;
                         break;
