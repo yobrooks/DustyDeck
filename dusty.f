@@ -4,7 +4,7 @@
 *  Modified to use timing libs in 2016
 *  Modified to use standardized RNG in 2018 
 
-      parameter (MAXDIM = 100)
+      parameter (MAXDIM = 25)
 
       integer IA(MAXDIM), N
       double precision AV(MAXDIM), BV(MAXDIM), CV(MAXDIM)

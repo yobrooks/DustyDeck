@@ -27,16 +27,6 @@ int main(){
     wall = walltime_();
     cpu = cputime_();
     /*Loop 10*/
-	
-    #ifdef YO1
-    cout << "YO1" << endl;
-    //int conrandV = conrand(seed);	
-    for(int i = 0; i<N; i++){
-        AV[i] = jn(0,(double)(conrand(seed)*pow(-1,(((int)(10*conrandV)%N)))));
-	    BV[i] = jn(1,(double)(conrand(seed)*pow(-1,(((int)(10*conrandV))%N))));
-    }
-
-    #else
     for(int i = 0; i<N; i++){
         AV[i] = jn(0,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
@@ -45,7 +35,7 @@ int main(){
     for(int i = 0; i<N; i++){
         BV[i] = jn(1,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
-    #endif
+
     /*Loop 12*/
     for(int i = 0; i<N; i++){
         ival = N;
@@ -54,6 +44,20 @@ int main(){
     }
 
     /*Loop 13*/
+    #ifdef YO4
+    for(int i = 0; i<N; i++){
+        /*Loop 14*/
+        for(int j = 0; j<N; j++){
+            idcheck(N, check, AV, BV, ID);
+            OP[i][j] = AV[j]*BV[i]/BV[j];
+            if(check > 0.5)
+            {
+                OP[i][j] = AV[i]*BV[j]/BV[i];
+            }
+        }
+        IA[i] = i; //NANI???
+    }
+    #else
     for(int i = 0; i<N; i++){
         /*Loop 14*/
         for(int j = 0; j<N; j++){
@@ -68,6 +72,7 @@ int main(){
         }
         IA[i] = i; //NANI???
     }
+    #endif
 
     /*Loop 15*/
     for(int i = 1;i<=N;i++){

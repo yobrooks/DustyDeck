@@ -9,7 +9,7 @@
 FC = gfortran    
 CC  = gcc 
 CFLAGS = -O3
-OPTFLAGS = -YO1
+OPTFLAGS = 
 
 TIMINGLIBS =  -L./ -llbstime 
 CLIBS = -lm
