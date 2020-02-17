@@ -122,7 +122,7 @@ do 51 i = 1, N
 
 #else
         do 50 i = 1, N
-                do 52 j = 1, N, -1
+                do 52 j = 1, N
                         CM(i,j) = 0.0
                         do 55 k = 1, N
                                 if(i .lt. j) then
