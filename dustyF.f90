@@ -3,7 +3,7 @@ program dusty
         IMPLICIT NONE
         !variable declarations/initializations
         !INTEGER, PARAMETER :: DP = SELECTED_REAL_KIND(17, 307)
-        INTEGER, PARAMETER :: MAXDIM = 100
+        INTEGER, PARAMETER :: MAXDIM = 25
         INTEGER, DIMENSION(MAXDIM) :: IA
         INTEGER :: N, i, j, k, ival
         REAL(KIND = DP), DIMENSION(MAXDIM) :: AV, BV, CV
@@ -11,7 +11,9 @@ program dusty
         REAL(KIND = DP) :: check, BOT, TOP, HOLDA, HOLDB, TRACE3
         REAL(KIND = 4) :: sum
 
-        !REAL(KIND = DP) :: seed
+#ifdef YO4
+#endif
+
         REAL(KIND = DP) :: seed, wall, cpu, walltime, cputime
         EXTERNAL :: walltime, cputime
     
@@ -99,8 +101,28 @@ HOLDB = 0D0;
 
 
 !Loop 50
+#ifdef YO1
         do 50 i = 1, N
-                do 52 j = 1, N
+                do 52 j = i+1, N
+                        CM(i,j) = 0.0
+                        do 55 k = 1, N
+                                CM(i,j) = CM(i,j) - AM(i,k) * BM(k,j) / check
+55                      continue
+52              continue
+50       continue
+
+do 51 i = 1, N
+                do 53 j = i, 1, -1
+                        CM(i,j) = 0.0
+                        do 56 k = 1, N
+                                CM(i,j) = CM(i,j) + AM(i,k) * BM(k,j) / check
+56                      continue
+53              continue
+51       continue
+
+#else
+        do 50 i = 1, N
+                do 52 j = 1, N, -1
                         CM(i,j) = 0.0
                         do 55 k = 1, N
                                 if(i .lt. j) then
@@ -111,7 +133,7 @@ HOLDB = 0D0;
 55                      continue
 52              continue
 50       continue
-
+#endif
 !Loop 60
         do 60 i = 1, N
                 do 61 j = 1, N

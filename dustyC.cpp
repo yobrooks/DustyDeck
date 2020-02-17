@@ -5,7 +5,7 @@
 #include "cputime.cc"
 
 using namespace std;
-const int MAXDIM = 100;
+const int MAXDIM = 25;
 
 /*Parameters*/
 double conrand(double &seed);
@@ -29,7 +29,22 @@ int main(){
 
     
     /*Loop 10*/
-	
+	#ifdef YO4
+    for(int i = 0; i<N; i++){
+        double jn1 = conrand(seed);
+        int jn2 = 10*conrand(seed);
+        double jn3 = jn1*pow(-1, jn2%N);
+        AV[i] = jn(0, jn3);
+    }
+
+     for(int i = 0; i<N; i++){
+        double jn1 = conrand(seed);
+        int jn2 = 10*conrand(seed);
+        double jn3 = jn1*pow(-1, jn2%N);
+        BV[i] = jn(1, jn3);
+    }
+
+    #else
     for(int i = 0; i<N; i++){
         AV[i] = jn(0,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
@@ -38,6 +53,7 @@ int main(){
     for(int i = 0; i<N; i++){
         BV[i] = jn(1,(double)(conrand(seed)*pow((-1), (((int)(10*conrand(seed)))%N))));
     }
+    #endif
 
     /*Loop 12*/
     for(int i = 0; i<N; i++){
@@ -47,7 +63,21 @@ int main(){
     }
 
     /*Loop 13*/
+    #ifdef YO4
     for(int i = 0; i<N; i++){
+        /*Loop 14*/
+        for(int j = 0; j<N; j++){
+            idcheck(N, check, AV, BV, ID);
+             OP[i][j] = AV[j]*BV[i]/BV[j];
+            if(check > 0.5)
+            {
+                OP[i][j] = AV[i]*BV[j]/BV[i];
+            }
+        }
+        IA[i] = i; //NANI???
+    }
+    #else
+        for(int i = 0; i<N; i++){
         /*Loop 14*/
         for(int j = 0; j<N; j++){
             idcheck(N, check, AV, BV, ID);
@@ -60,7 +90,8 @@ int main(){
             }
         }
         IA[i] = i; //NANI???
-    }
+        }
+    #endif
 
     /*Loop 15*/
     for(int i = 1;i<=N;i++){
@@ -84,9 +115,8 @@ int main(){
 
     /*Loop 40*/
     for(int i = 0; i<N; i++){
-        idcheck(N, check, AV, BV, ID);
-        /*Loop 45*/
-        for(int j = 0; j<N; j++){
+        idcheck(N, check, AV, BV, ID);   
+        for(int j = 0; j<N; j++){    
             if(check > 0.5){
                 BOT = OP[i][j];
                 TOP = AV[j]*BV[j];
@@ -95,7 +125,8 @@ int main(){
                 BV[j] = HOLDA+CV[j]/(TOP-BOT)*ID[j][j];
                 AM[i][j] = AV[j]*trig(IA[i]+1, IA[j]+1); 
                 BM[i][j] = BV[j]*trig(IA[j]+1, IA[i]+1);
-             }else {
+            }
+            else {
                 BOT = OP[i][j];
                 TOP = AV[j]*BV[j];
                 HOLDA = AV[j];
@@ -109,6 +140,7 @@ int main(){
 
     /*Loop 50*/
     #ifdef YO1
+    //compute the i<j branch first
     for(int i = 0; i<N; i++){
         for(int j = i+1; j<N; j++){
             CM[i][j] = 0;
@@ -118,8 +150,9 @@ int main(){
         }
     }
 
+    //compute the else statement next
     for(int i = 0; i<N; i++){
-        for(int i = j; j>=0; j--){
+        for(int j = i; j>=0; j--){
             CM[i][j] = 0;
             for(int k = 0; k < N; k++){
                 CM[i][j] = CM[i][j]+AM[i][k]*BM[k][j]/check;
@@ -144,8 +177,8 @@ int main(){
     }
     #endif
 
-    /*Loop 60*/ 
-    for(int i = 0; i<N; i++){
+    /*Loop 60*/
+   for(int i = 0; i<N; i++){
         /*Loop 61*/
         for(int j = 0; j<N; j++){
             sum = 0.0; 
@@ -164,7 +197,6 @@ int main(){
             CM[i][j] = DM[i][j];
         }
     }
-
     /*Loop 70*/
     for(int i = 0; i<N; i++){
         /*Loop 71*/
@@ -190,17 +222,25 @@ int main(){
     }
  
     /*Loop 80*/
+    #ifdef YO4
+    for(int i = 0; i<N; i++){
+        double hold = HOLDA*HOLDB;
+        double t1 = AM[IA[i]][IA[i]]+BM[IA[i]][IA[i]];
+        double t2 = t1 - DM[IA[i]][IA[i]];
+        TRACE3 = TRACE3 + (t2/hold);
+    }
+    #else
     for(int i = 0; i<N; i++){
         TRACE3 = TRACE3 + (AM[IA[i]][IA[i]]+BM[IA[i]][IA[i]]-DM[IA[i]][IA[i]])/(HOLDA*HOLDB);
     }
+    #endif
 
     /*DONE!*/
    cpu = cputime_() - cpu;
    wall = walltime_() - wall;
-   cout << "Final Trace: " << setprecision(17) << TRACE3 << " and IDCheck: " << check << endl;;
+   cout << "Final Trace: " << setprecision(17) << TRACE3 << " and IDCheck: " << check << endl;
    cout << "Runtime: " << setprecision(17) << cpu << " seconds" << endl;
 }
-
 
 double conrand(double &seed){
     double a, m, temp;
@@ -237,7 +277,12 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
     //set everything equal to else if statement first
     for(int i = 0; i<N; i++){
         for(int j =0; j<N; j++){
+             #ifdef YO4
+                float arccos = 2*acosf(-1.0);
+                ID[i][j] = cos(check+(i+1)*arccos/N)+2*sin(check+(j+1)*arccos/N);
+                #else
             ID[i][j] = cos(check+2*(i+1)*acosf(-1.0)/N)+2*sin(check+2*(j+1)*acosf(-1.0)/N);
+            #endif
         }
     }
 
@@ -247,8 +292,6 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
         if(AV[i]*BV[i] < 0){
             ID[i][i] = -1;
         }
-        else
-            ID[i][i] = 1;
     }
 
     #else
@@ -270,7 +313,12 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
                 }
             } 
             else if(i!=j){
+                 #ifdef YO4
+                float arccos = 2*acosf(-1.0);
+                ID[i][j] = cos(check+(i+1)*arccos/N)+2*sin(check+(j+1)*arccos/N);
+                #else
                 ID[i][j] = cos(check+2*(i+1)*acosf(-1.0)/N)+2*sin(check+2*(j+1)*acosf(-1.0)/N);
+                #endif
             }
        }
     }
@@ -346,3 +394,4 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
     }
     check = min(fabs(check2), fabs(check))/max(fabs(check2), fabs(check));
 }
+
