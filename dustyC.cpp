@@ -268,25 +268,25 @@ void idcheck(int N, double &check, double AV[], double BV[], double ID[MAXDIM][M
         for(int j = 0; j<N; j++){
             /*Loop 90*/
             for(int k = 0; k<N; k++){
-                goTo = (int)(((i+j+k+3)%4)+1);
+                goTo = (int)(((i+j+k+3)%4));
                 switch(goTo){
                 /*goto 200*/
-                    case 1:
+                    case 0:
                         a = a+AV[i]*BV[j]*ID[j][k];
                         check = check + a;
                         break;
                 /*goto 300*/
-                    case 2:
+                    case 1:
                         b = b+AV[j]*BV[i]*ID[k][j];
                         check = check - b;
                         break;
                 /*goto 400*/
-                    case 3:
+                    case 2:
                         c = c-AV[i]*BV[j]*ID[k][j];
                         check = sqrt(pow(b,2)+pow(c,2));
                         break;
                 /*goto 500*/
-                    case 4:
+                    case 3:
                         d = d-AV[j]*BV[i]*ID[j][k];
                         check2 = a+b+c+d;
                         break;
