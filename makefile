@@ -9,11 +9,12 @@
 FC = gfortran    
 CC  = gcc 
 CFLAGS = -O3
-OPTFLAGS = -YO1
+OPTFLAGS = -cpp -O1 -fcrossjumping -fexpensive-optimizations -fcaller-saves -fcse-skip-blocks -fthread-jumps -DYO1 -DYO2 -DYO3 -DYO4
+
+
 
 TIMINGLIBS =  -L./ -llbstime 
 CLIBS = -lm
-
 OBJS = cputime.o walltime.o  
 
 # Three different targets for all three dusty versions
@@ -28,10 +29,10 @@ walltime.o : walltime.cc
 
 #Original F77 dusty file
 dusty.o : dusty.f  
-	$(FC) $(OPTFLAGS) -c dusty.f
+	$(FC) -c dusty.f
 
 dusty : dusty.o lib  $(OBJS)
-	$(FC) $(OPTFLAGS) -o dusty dusty.o  $(TIMINGLIBS) -lstdc++ 
+	$(FC) -o dusty dusty.o  $(TIMINGLIBS) -lstdc++ 
 
 # C++ dusty file
 dustyC.o : dustyC.cpp
